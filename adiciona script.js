@@ -1,62 +1,22 @@
-const lista = document.getElementById("lista");
-const input = document.getElementById("tarefa");
+function addTask() {
+  const input = document.getElementById("taskInput");
+  const text = input.value.trim();
 
-// carrega tarefas salvas ao abrir o app
-document.addEventListener("DOMContentLoaded", carregarTarefas);
+  if (text === "") return;
 
-function adicionarTarefa() {
-    const texto = input.value.trim();
-    if (texto === "") return;
+  const li = document.createElement("li");
 
-    const tarefa = {
-        texto: texto,
-        concluida: false
-    };
+  const span = document.createElement("span");
+  span.textContent = text;
+  span.onclick = () => li.classList.toggle("done");
 
-    criarElementoTarefa(tarefa);
-    salvarTarefas();
+  const btn = document.createElement("button");
+  btn.textContent = "X";
+  btn.onclick = () => li.remove();
 
-    input.value = "";
-}
+  li.appendChild(span);
+  li.appendChild(btn);
 
-function criarElementoTarefa(tarefa) {
-    const item = document.createElement("li");
-    if (tarefa.concluida) item.classList.add("done");
-
-    item.innerHTML = `
-        <span>${tarefa.texto}</span>
-        <button>🗑️</button>
-    `;
-
-    item.querySelector("span").onclick = () => {
-        item.classList.toggle("done");
-        salvarTarefas();
-    };
-
-    item.querySelector("button").onclick = () => {
-        item.remove();
-        salvarTarefas();
-    };
-
-    lista.appendChild(item);
-}
-
-function salvarTarefas() {
-    const tarefas = [];
-    document.querySelectorAll("li").forEach(item => {
-        tarefas.push({
-            texto: item.querySelector("span").innerText,
-            concluida: item.classList.contains("done")
-        });
-    });
-
-    localStorage.setItem("tarefas", JSON.stringify(tarefas));
-}
-
-function carregarTarefas() {
-    const dados = localStorage.getItem("tarefas");
-    if (!dados) return;
-
-    const tarefas = JSON.parse(dados);
-    tarefas.forEach(tarefa => criarElementoTarefa(tarefa));
+  document.getElementById("taskList").appendChild(li);
+  input.value = "";
 }
